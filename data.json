@@ -1,0 +1,6 @@
+{
+    "Recommend": ["a", "b", "c", "d"],
+    "Quality": ["a", "b", "c", "d"],
+    "Hairstyle": ["a", "b", "c", "d"],
+    "Body": ["a", "b", "c", "d"]
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Builder</title>
+    <!-- Google Fonts for Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        /* Dark cherry blossom theme */
+        body {
+            background-color: #2c2f38;
+            color: #f4f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 16px;
+        }
+
+        /* Container to hold all elements */
+        .container {
+            background-color: #3c434c;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Input field styling */
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #2e353e;
+            color: #f4f0f0;
+            border: 2px solid #f4c4c4;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .input-field:focus {
+            border-color: #f4a3a3;
+        }
+
+        /* Clear button */
+        .clear-button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .clear-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Category and item buttons */
+        .category-button, .item-button {
+            background-color: #2e353e;
+            color: #f4f0f0;
+            border: 2px solid #f4c4c4;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .category-button:hover, .item-button:hover {
+            background-color: #f4c4c4;
+            border-color: #f4a3a3;
+        }
+
+        /* Item list container */
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" class="input-field" id="promptInput" placeholder="Type freely or add suggestions..." />
+        <button class="clear-button" onclick="clearInput()">Clear Prompt</button>
+        <div class="category-container" id="categoryButtons"></div>
+        <div id="itemList" class="items-container"></div>
+    </div>
+
+    <script>
+        const promptInput = document.getElementById("promptInput");
+        const categoryButtons = document.getElementById("categoryButtons");
+        const itemList = document.getElementById("itemList");
+
+        // Function to create buttons for each category
+        function createButtons(data) {
+            categoryButtons.innerHTML = ''; // Clear previous buttons
+            itemList.innerHTML = ''; // Clear previous items
+
+            // Create category buttons
+            Object.entries(data).forEach(([category, items], index) => {
+                const button = document.createElement("button");
+                button.classList.add("category-button");
+                button.textContent = category;
+                button.onclick = () => toggleItems(category, items);
+
+                categoryButtons.appendChild(button);
+
+                // Automatically click the first category button after all buttons are created
+                if (index === 0) {
+                    button.click();
+                }
+            });
+        }
+
+        // Function to toggle items for a category
+        function toggleItems(category, items) {
+            // Clear current item list
+            itemList.innerHTML = '';
+            // Add the category items to the list
+            items.forEach(item => {
+                const itemButton = document.createElement("button");
+                itemButton.classList.add("item-button");
+                itemButton.textContent = item;
+                itemButton.onclick = () => addToInput(item);
+                itemList.appendChild(itemButton);
+            });
+        }
+
+        // Function to add selected item to the input field
+        function addToInput(item) {
+            promptInput.value += ` ${item},`;
+        }
+
+        // Function to clear the input field
+        function clearInput() {
+            promptInput.value = '';
+        }
+
+        // Fetch JSON data and create buttons
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => createButtons(data))
+            .catch(error => console.error('Error loading the JSON file:', error));
+    </script>
+</body>
+</html>
